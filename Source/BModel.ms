@@ -59,7 +59,7 @@ struct BModel
 	
 	_parentBoneIndexs = #(),
 	_allowTextureMirror = false, -- doesn't work on characters? required for stages?
-	
+	_forceCreateBones = false,
 	
 	_exportType=#XFILE, -- #XFILE, #CHARACTER
 	_runExtractTexturesCmd = true,
@@ -788,6 +788,7 @@ fn DrawScenegraph j d parentMatrix =
 				)
 				else if (tex.texHeaders[v2].wrapS == 2) then
 				(
+					_currMaterial.name += "_U" -- add suffix to let the modeler know where mirror should be used
 					if (_allowTextureMirror) then
 					(
 						_currMaterial.diffusemap.coords.U_Mirror = true
@@ -826,6 +827,7 @@ fn DrawScenegraph j d parentMatrix =
 				)
 				else if (tex.texHeaders[v2].wrapT == 2) then
 				(
+					_currMaterial.name += "_V" -- add suffix to let the modeler know where mirror should be used
 					if (_allowTextureMirror) then
 					(
 						_currMaterial.diffusemap.coords.V_Mirror = true
@@ -892,6 +894,7 @@ fn DrawScene =
 	identity = m.GetIdentity()
 	CreateFrameNodes 0 0 identity rootFrameNode 
 	
+	-- FIX: Force create bone option allows to generate bones independently of their count
 	if ((rootFrameNode.children.count == 1 AND rootFrameNode.children[1].children.count == 0)) then
 		_createBones = false  
 	
@@ -1219,7 +1222,7 @@ fn CreateBTPDataFile =
 	close fBTP
 ),
 	
-fn Import filename boneThickness loadAnimations exportTextures exportType includeScaling =
+fn Import filename boneThickness allowTextureMirror forceCreateBones loadAnimations exportTextures exportType includeScaling =
 (
 	if (exportTextures) then
 		_texturePrefix = ""
@@ -1234,9 +1237,9 @@ fn Import filename boneThickness loadAnimations exportTextures exportType includ
 	--_exportType=#XFILE
 	_exportType=exportType 
 	
-	_allowTextureMirror = true -- doesn't work on characters? required for stages?
-	
-	_loadAnimations =loadAnimations
+	_allowTextureMirror = allowTextureMirror
+	_forceCreateBones = forceCreateBones
+	_loadAnimations = loadAnimations
 	_boneThickness = boneThickness
 	LoadModel filename
 	
