@@ -943,6 +943,11 @@ fn DrawScene =
 	(
 		chr = CreateCharacter(rootFrameNode)
 	    --RotateAroundWorld  chr (EulerAngles 90 0 0)
+		
+		-- Rotate Character assembly upwards and swap hierarchy for Point and Character
+		rotate chr (EulerAngles 90 0 0)
+		_bones[1].parent = d
+		d.parent = chr
 	)
 	
 	--RotateAroundWorld modelMesh (EulerAngles 90 0 0) -- e.g. stage, object
