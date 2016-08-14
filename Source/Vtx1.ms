@@ -341,17 +341,32 @@ struct Vtx1
 	br.SeekSet (vtx1Offset + header.arrayFormatOffset)
 	
 	j = 1
+	last_offset = 0
 	for i = 1 to 13 do
-	(
+	( 
 	  if (header.offsets[i] != 0) then
 	  (
 	  	f = formats[j]
 		len = header.GetLength i
 		  
 		--print ("Vert " + (i as string) + ":" + (len as string)  )
+		
+		temp_test_var = 0  -- help to check the offsets
+		temp_test_counter = 0
+		while (!temp_test_var)
+		(
+		  temp_test_counter += 1
+		  temp_test_var = header.offsets[i+temp_test_counter]
+		)
+		test_length = temp_test_var - header.offsets[i]
+		if (len != test_length)
+		    (print ("len=" + (len as string) + "; test= " + (test_length as string))
+		    throw "WARNING: vtx1: explicit and inplicit length do not match" )
+		
 		ReadVertexArray f len br (vtx1Offset + header.offsets[i])
 		
 		j += 1
+		last_offset=header.offsets[i]
 	  )
 	)
 	
