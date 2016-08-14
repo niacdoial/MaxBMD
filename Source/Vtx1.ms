@@ -307,6 +307,8 @@ struct Vtx1
       else
 	  		throw "WARNING: vtx1: unsupported componentCount for texcoords array "
     )
+    else
+          throw "WARNING: vtx1: unsupported ArrayType"
 	
   ),
 				 
